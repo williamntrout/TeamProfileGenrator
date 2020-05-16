@@ -1,17 +1,22 @@
-const Manager = require("./lib/Manager");
-const Engineer = require("./lib/Engineer");
+const Manager = require("./lib/Manager.js");
+const Engineer = require("./lib/Engineer.js");
 const Intern = require("./lib/Intern");
-const Employee = require("./lib.Employee");
+const Employee = require("./lib/Employee.js");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
+
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const render = require("./lib/htmlRenderer");
+const render = require("./lib/htmlRenderer").render;
 
 const questions = [{
+        type: "input",
+        name: "managerName",
+        message: "What manager does the employee report to?",
+    }, {
         type: "input",
         name: "name",
         message: "What is the employee's name?",
@@ -27,27 +32,64 @@ const questions = [{
         message: "What is the employee's email address?",
     },
     {
-        type: "input",
+        type: "list",
         name: "role",
         message: "What is the employee's role?",
-        // i want this to be multiple choice
+        choices: ['Manager', 'Engineer', 'Intern']
     },
     {
         type: "input",
         name: "officeNumber",
         message: "What is the Managers office number?",
+        when: (answers) => {
+            return answers.role === "Manager"
+        }
     },
     {
         type: "input",
         name: "github",
         message: "What is the Engineer's github user name?",
+        when: (answers) => {
+            return answers.role === "Engineer"
+        }
     },
     {
         type: "input",
         name: "school",
         message: "What school does the Intern attend?",
+        when: (answers) => {
+            return answers.role === "Intern"
+        }
     },
 ]
+
+const init = async () => {
+    let employees = []
+    const answer = await inquirer.prompt(questions)
+    // Figure out what R is
+    switch (answer.role) {
+        case "Manager":
+            employees.push(new Manager(answer.name, answer.id, answer.email, answer.officeNumber))
+            break;
+        default:
+            console.log("Not set up yet")
+            break;
+    }
+    // Push he new object to emloyees
+    // Figure ou if the user would like to coninue
+    // Render or continue
+    fs.writeFile("team.html", render(employees), () => {
+        console.log("teamMemberAdded")
+    })
+}
+// .then((inquirerResponse) => {
+//     const markdown = generateMarkdown(inquirerResponse)
+
+//     writeToFile(
+//         "README.md",
+//         markdown
+//     );
+// });
 
 init();
 

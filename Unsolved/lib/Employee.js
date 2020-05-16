@@ -5,21 +5,19 @@ class Employee {
         this.id = id;
         this.email = email;
         this.role = role || "Employee";
-        this.getName = function () {
-            return this.name;
-        };
-        this.getId = function () {
-            return this.id;
-        };
-        this.getEmail = function () {
-            return this.email;
-        };
-        this.getRole = function () {
-            return this.role
-        };
     };
-
-    console.log(`The employee's informatin is Name: ${this.name} , ID; ${this.id} , EMAIL: ${this.email} , Role: ${this.role}`);
+    getName() {
+        return this.name;
+    };
+    getId() {
+        return this.id;
+    };
+    getEmail() {
+        return this.email;
+    };
+    getRole() {
+        return this.role
+    };
 
 
 };
